@@ -3,9 +3,12 @@
 import { forwardRef, useId } from "react";
 import { motion } from "motion/react";
 import { useProduct } from "@/app/hooks/useProduct";
+import { useVariantSelection } from "@/app/hooks/useVariantSelection";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ProductMedia } from "./ProductMedia";
 import { ProductInfo } from "./ProductInfo";
+import { VariantSelector } from "./VariantSelector";
+import { AddToBagButton } from "./AddToBagButton";
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: 20 },
@@ -33,11 +36,27 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
   ({ onClose, productHandle }, ref) => {
     const titleId = useId();
     const { product, isLoading, error } = useProduct(productHandle);
-    const initialVariant = product?.variants.nodes[0] ?? null;
-    const activeImage = initialVariant?.image ?? product?.featuredImage ?? null;
-    const price =
-      initialVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
-    const compareAtPrice = initialVariant?.compareAtPrice ?? null;
+    
+    // Variant selection hook
+    const {
+      selectedOptions,
+      resolvedVariant,
+      selectOption,
+      isOptionDisabled,
+      isSelected,
+    } = useVariantSelection({
+      variants: product?.variants.nodes ?? [],
+      options: product?.options ?? [],
+    });
+
+    // Use resolved variant for display, fallback to first variant
+    const activeVariant = resolvedVariant ?? product?.variants.nodes[0] ?? null;
+    const activeImage = activeVariant?.image ?? product?.featuredImage ?? null;
+    const price = activeVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
+    const compareAtPrice = activeVariant?.compareAtPrice ?? null;
+    
+    // Button is disabled if no variant is selected or variant is unavailable
+    const isAddDisabled = !resolvedVariant || !resolvedVariant.availableForSale;
 
     return (
       <div 
@@ -79,7 +98,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
           ) : product && price ? (
             <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
               <ProductMedia image={activeImage} />
-              <div className="flex flex-col p-6 lg:p-8">
+              <div className="flex flex-col gap-8 p-6 lg:p-8">
                 <ProductInfo
                   titleId={titleId}
                   title={product.title}
@@ -87,6 +106,16 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
                   price={price}
                   compareAtPrice={compareAtPrice}
                 />
+                {product.options && product.options.length > 0 && (
+                  <VariantSelector
+                    options={product.options}
+                    selectedOptions={selectedOptions}
+                    onSelectOption={selectOption}
+                    isOptionDisabled={isOptionDisabled}
+                    isSelected={isSelected}
+                  />
+                )}
+                <AddToBagButton disabled={isAddDisabled} />
               </div>
             </div>
           ) : (
