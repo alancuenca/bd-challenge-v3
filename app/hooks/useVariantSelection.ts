@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { ProductVariant, ProductOption } from "@/lib/shopify/types";
 import {
   resolveVariant,
@@ -34,12 +34,12 @@ export function useVariantSelection({
     const hasRealOptions = options.some(
       (option) => option.name !== "Title" && option.values.length > 1
     );
-    
+
     if (!hasRealOptions) {
       const firstAvailable = getFirstAvailableVariant(variants);
       return getSelectedOptionsFromVariant(firstAvailable);
     }
-    
+
     return {};
   });
 
