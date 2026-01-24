@@ -1,5 +1,14 @@
 # Bryt Designs Tech Challenge
 
+### The design is in the DESIGN.md file
+
+### What I would have done with more time:
+- Refine styles for horizontal view on mobile
+- Add swipe to navigate through the gallery
+- Reduce layout shift when loading from skeleton to product
+- think more deeply about the UX/UI of the preview cards
+
+
 ### Shopify Quick View Modal (Headless UI Feature)
 
 ### Hello fellow candidate! 👋
