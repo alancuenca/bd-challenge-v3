@@ -43,3 +43,6 @@ next-env.d.ts
 
 # generated
 /lib/shopify/graphql/.generated
+
+
+DESIGN.md
