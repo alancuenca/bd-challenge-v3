@@ -1,4 +1,9 @@
+"use client";
+
+import { useRef } from "react";
+import Image from "next/image";
 import type { ProductCard as ProductCardType } from "@/lib/shopify/types";
+import { useQuickView } from "./QuickViewModal";
 
 const formatPrice = (amount: string, currencyCode: string) => {
   const value = Number(amount);
@@ -19,6 +24,8 @@ type ProductCardProps = {
 };
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const { open } = useQuickView();
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const price = product.priceRange.minVariantPrice;
   const compareAt = product.compareAtPriceRange?.minVariantPrice;
   const image = product.featuredImage;
@@ -33,8 +40,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     <article className="product-card group col-span-4 flex flex-col overflow-hidden">
       <div className="relative aspect-4/5 w-full overflow-hidden bg-zinc-100">
         {image ? (
-          <img
+          <Image
             src={image.url}
+            width={image.width ?? 800}
+            height={image.height ?? 1000}
             alt={image.altText || product.title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
@@ -59,7 +68,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
         </div>
-        <button className="btn-secondary w-full" type="button">
+        <button
+          ref={buttonRef}
+          className="btn-secondary w-full"
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => open(product.handle, buttonRef)}
+        >
           Quick View
         </button>
       </div>

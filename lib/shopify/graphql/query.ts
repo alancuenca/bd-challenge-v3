@@ -69,3 +69,69 @@ export const getProducts = `#graphql
     }
   }
 ` as const;
+
+export const getProductByHandle = `#graphql
+  query getProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      handle
+      title
+      description
+      featuredImage {
+        url
+        altText
+        width
+        height
+      }
+      images(first: 10) {
+        nodes {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+      options {
+        id
+        name
+        values
+      }
+      variants(first: 100) {
+        nodes {
+          id
+          title
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+          price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+        maxVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+    }
+  }
+` as const;
