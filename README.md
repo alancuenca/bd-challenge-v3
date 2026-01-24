@@ -120,18 +120,18 @@ We’re not expecting a full storefront—**just one polished feature**.
 - [ ] Route-based modal:
   - [ ] Opening Quick View updates the URL (e.g., `/products/[handle]`)
   - [ ] Closing returns to the previous route without a full page reload
-- [ ] Focus trap + full accessible modal semantics (`role="dialog"`, `aria-modal="true"`, labelled title).
-- [ ] Sticky mobile CTA bar (improves usability on small screens).
+- [X] Focus trap + full accessible modal semantics (`role="dialog"`, `aria-modal="true"`, labelled title).
+- [X] Sticky mobile CTA bar (improves usability on small screens).
 - [ ] Keyboard enhancements:
   - [ ] Arrow-key navigation through option values
   - [ ] Enter/Space activation on option controls
-- [ ] Refined state handling:
-  - [ ] Abort/cancel in-flight product fetch on rapid modal switching
+- [X] Refined state handling:
+  - [X] Abort/cancel in-flight product fetch on rapid modal switching
   - [ ] Avoid UI flicker when switching products (keep previous content until new content is ready)
-- [ ] UI polish extras:
-  - [ ] Thumbnail gallery with animated selection states
+- [X] UI polish extras:
+  - [X] Thumbnail gallery with animated selection states
   - [ ] Price/compare-at layout transitions using Motion layout animations
-  - [ ] Reduced motion support (`prefers-reduced-motion`)
+  - [X] Reduced motion support (`prefers-reduced-motion`)
 
 ---
 

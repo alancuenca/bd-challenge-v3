@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 const focusableSelectors = [
   "a[href]",
@@ -24,6 +24,15 @@ export const useFocusTrap = ({
   isActive,
   returnFocusRef,
 }: FocusTrapOptions) => {
+  // Get focusable elements dynamically (content may change after loading)
+  const getFocusableElements = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return [];
+    return Array.from(
+      container.querySelectorAll<HTMLElement>(focusableSelectors)
+    );
+  }, [containerRef]);
+
   useEffect(() => {
     if (!isActive) {
       return;
@@ -35,17 +44,21 @@ export const useFocusTrap = ({
     }
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const focusableElements = Array.from(
-      container.querySelectorAll<HTMLElement>(focusableSelectors),
-    );
 
-    const focusTarget = focusableElements[0] ?? container;
-    focusTarget.focus();
+    // Focus first element after a short delay to allow content to render
+    const focusTimeout = setTimeout(() => {
+      const focusableElements = getFocusableElements();
+      const focusTarget = focusableElements[0] ?? container;
+      focusTarget.focus();
+    }, 50);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab") {
         return;
       }
+
+      // Get fresh list of focusable elements each time (content may have changed)
+      const focusableElements = getFocusableElements();
 
       if (focusableElements.length === 0) {
         event.preventDefault();
@@ -67,6 +80,7 @@ export const useFocusTrap = ({
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      clearTimeout(focusTimeout);
       document.removeEventListener("keydown", handleKeyDown);
       if (returnFocusRef?.current) {
         returnFocusRef.current.focus();
@@ -74,5 +88,5 @@ export const useFocusTrap = ({
         previouslyFocused?.focus();
       }
     };
-  }, [containerRef, isActive, returnFocusRef]);
+  }, [containerRef, isActive, returnFocusRef, getFocusableElements]);
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import type { ProductVariant, ProductOption } from "@/lib/shopify/types";
 import {
   resolveVariant,
@@ -28,20 +28,33 @@ export function useVariantSelection({
   variants,
   options,
 }: UseVariantSelectionParams): UseVariantSelectionReturn {
-  // Initialize with first available variant only if there's a single variant (no real options)
-  // Otherwise, start with empty selection to force user to choose
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
-    const hasRealOptions = options.some(
-      (option) => option.name !== "Title" && option.values.length > 1
-    );
+  // Track product changes by variant ID
+  const productKey = variants[0]?.id ?? "";
+  const lastProductKey = useRef(productKey);
+  
+  // Get default selection from first available variant
+  const defaultSelection = useMemo(() => {
+    const firstAvailable = getFirstAvailableVariant(variants);
+    return getSelectedOptionsFromVariant(firstAvailable);
+  }, [variants]);
 
-    if (!hasRealOptions) {
-      const firstAvailable = getFirstAvailableVariant(variants);
-      return getSelectedOptionsFromVariant(firstAvailable);
+  // Reset state when product changes
+  const [userSelections, setUserSelections] = useState<Record<string, string>>({});
+  
+  // Check if product changed and reset user selections
+  if (productKey !== lastProductKey.current) {
+    lastProductKey.current = productKey;
+    // Reset user selections on product change (will be applied on next render)
+    if (Object.keys(userSelections).length > 0) {
+      setUserSelections({});
     }
+  }
 
-    return {};
-  });
+  // Merge default selection with user selections (user selections take priority)
+  const selectedOptions = useMemo(() => ({
+    ...defaultSelection,
+    ...userSelections,
+  }), [defaultSelection, userSelections]);
 
   // Resolve the current variant based on selected options
   const resolvedVariant = useMemo(() => {
@@ -64,7 +77,7 @@ export function useVariantSelection({
 
   // Select an option value
   const selectOption = useCallback((optionName: string, optionValue: string) => {
-    setSelectedOptions((prev) => ({
+    setUserSelections((prev) => ({
       ...prev,
       [optionName]: optionValue,
     }));

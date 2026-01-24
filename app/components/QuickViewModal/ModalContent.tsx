@@ -58,16 +58,14 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
       (option) => option.name !== "Title" && option.values.length > 0
     ) ?? false;
 
-    // Use resolved variant for display, fallback to first variant only if no real variants
-    const activeVariant = resolvedVariant ?? (!hasRealVariants ? product?.variants.nodes[0] : null) ?? null;
+    // Use resolved variant for display (always auto-selected now)
+    const activeVariant = resolvedVariant ?? product?.variants.nodes[0] ?? null;
     const activeImage = activeVariant?.image ?? product?.featuredImage ?? null;
     const price = activeVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
     const compareAtPrice = activeVariant?.compareAtPrice ?? null;
 
-    // Button is disabled if:
-    // 1. Product has real variants but no variant is resolved (user must select all options)
-    // 2. The active variant is unavailable for sale
-    const isAddDisabled = (hasRealVariants && !resolvedVariant) || !activeVariant?.availableForSale;
+    // Button is disabled if variant is unavailable for sale
+    const isAddDisabled = !activeVariant?.availableForSale;
 
     // Get all product images
     const productImages = product?.images.nodes ?? [];
@@ -133,38 +131,48 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
                 We ran into an issue loading this product. Please try again.
               </div>
             ) : product && price ? (
-              <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
-                <ProductMedia
-                  image={activeImage}
-                  onClick={productImages.length > 0 ? () => setIsGalleryOpen(true) : undefined}
-                  hasMultipleImages={hasMultipleImages}
-                />
-                <div className="flex flex-col p-6 lg:p-8">
-                  <div className="flex flex-1 flex-col overflow-y-auto">
-                    <ProductInfo
-                      titleId={titleId}
-                      title={product.title}
-                      description={product.description}
-                    />
-                  </div>
-                  
-                  {/* Sticky bottom section with price, variants, and button */}
-                  <div className="flex flex-col gap-6 pt-2">
-                    {hasRealVariants && (
-                      <VariantSelector
-                        options={product.options}
-                        selectedOptions={selectedOptions}
-                        onSelectOption={selectOption}
-                        isOptionDisabled={isOptionDisabled}
-                        isSelected={isSelected}
+              <div className="flex flex-col">
+                <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
+                  <ProductMedia
+                    image={activeImage}
+                    onClick={productImages.length > 0 ? () => setIsGalleryOpen(true) : undefined}
+                    hasMultipleImages={hasMultipleImages}
+                  />
+                  <div className="flex flex-col p-6 pb-28 lg:p-8 lg:pb-8">
+                    <div className="flex flex-1 flex-col overflow-y-auto">
+                      <ProductInfo
+                        titleId={titleId}
+                        title={product.title}
+                        description={product.description}
                       />
-                    )}
-                    <PriceDisplay
-                      price={price}
-                      compareAtPrice={compareAtPrice}
-                    />
-                    <AddToBagButton disabled={isAddDisabled} />
+                    </div>
+                    
+                    {/* Variant selector and price */}
+                    <div className="flex flex-col gap-6 pt-2">
+                      {hasRealVariants && (
+                        <VariantSelector
+                          options={product.options}
+                          selectedOptions={selectedOptions}
+                          onSelectOption={selectOption}
+                          isOptionDisabled={isOptionDisabled}
+                          isSelected={isSelected}
+                        />
+                      )}
+                      <PriceDisplay
+                        price={price}
+                        compareAtPrice={compareAtPrice}
+                      />
+                      {/* Desktop Add to Bag - hidden on mobile */}
+                      <div className="hidden lg:block">
+                        <AddToBagButton disabled={isAddDisabled} />
+                      </div>
+                    </div>
                   </div>
+                </div>
+
+                {/* Sticky mobile CTA bar */}
+                <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] dark:border-zinc-700 dark:bg-zinc-900 lg:hidden">
+                  <AddToBagButton disabled={isAddDisabled} />
                 </div>
               </div>
             ) : (
