@@ -28,10 +28,19 @@ export function useVariantSelection({
   variants,
   options,
 }: UseVariantSelectionParams): UseVariantSelectionReturn {
-  // Initialize with first available variant
+  // Initialize with first available variant only if there's a single variant (no real options)
+  // Otherwise, start with empty selection to force user to choose
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
-    const firstAvailable = getFirstAvailableVariant(variants);
-    return getSelectedOptionsFromVariant(firstAvailable);
+    const hasRealOptions = options.some(
+      (option) => option.name !== "Title" && option.values.length > 1
+    );
+    
+    if (!hasRealOptions) {
+      const firstAvailable = getFirstAvailableVariant(variants);
+      return getSelectedOptionsFromVariant(firstAvailable);
+    }
+    
+    return {};
   });
 
   // Resolve the current variant based on selected options

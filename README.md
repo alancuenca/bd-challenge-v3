@@ -72,44 +72,44 @@ We’re not expecting a full storefront—**just one polished feature**.
 
 ### Required (Must Have)
 
-- [ ] Fetch and render a minimal product listing from the provided Shopify **collection handle** (Storefront API).
-- [ ] Each product card includes at least: image, title, price, and a **Quick View** trigger.
-- [ ] Clicking **Quick View** opens a **modal** (not a drawer).
-- [ ] Modal can be closed via:
-  - [ ] Close button
-  - [ ] Backdrop click
-  - [ ] `Escape` key
-- [ ] Background scroll is locked while the modal is open.
-- [ ] Basic focus management:
-  - [ ] Focus moves into the modal on open
-  - [ ] Focus returns to the triggering element on close
-- [ ] Product details shown inside the modal are fetched from Shopify’s **Storefront API** (GraphQL).
-- [ ] Modal includes a designed **loading skeleton state** while product details are loading.
-- [ ] Modal layout:
-  - [ ] Desktop: two-column layout (media left, content right)
-  - [ ] Mobile: stacked layout (media top, content bottom)
-- [ ] Variant selection UI:
-  - [ ] Render product options (e.g., Size/Color) as designed controls (pills/segmented preferred)
-  - [ ] Maintain `selectedOptions` state (option-name → value)
-  - [ ] Resolve the selected variant from `selectedOptions`
-  - [ ] Disable unavailable/invalid option values based on current partial selection
-  - [ ] Update displayed **price** when the resolved variant changes
-  - [ ] Update displayed **image** when the resolved variant changes (variant image preferred; fallback allowed)
-- [ ] Primary CTA: **Add to bag (simulation only)**:
-  - [ ] CTA disabled until a valid, available variant is selected
-  - [ ] On click, simulate async add with a deterministic delay (~800–1200ms)
-  - [ ] CTA transitions to a success state (e.g., “Added” + check)
-  - [ ] After ~1–2 seconds, reset to idle **or** close the modal (choose one and be consistent)
-- [ ] **Motion** requirements:
-  - [ ] Backdrop fade in/out
-  - [ ] Modal entrance/exit animation
-  - [ ] At least one microinteraction animation (examples below are acceptable):
-    - [ ] Animated selected option indicator
-    - [ ] Button loading → success transition
-    - [ ] Image crossfade when variant changes
-    - [ ] Subtle press feedback on CTA
-- [ ] TypeScript requirements:
-  - [ ] No `any` for the core Shopify response shapes used in the modal (product, variants, options, prices)
+- [X] Fetch and render a minimal product listing from the provided Shopify **collection handle** (Storefront API).
+- [X] Each product card includes at least: image, title, price, and a **Quick View** trigger.
+- [X] Clicking **Quick View** opens a **modal** (not a drawer).
+- [X] Modal can be closed via:
+  - [X] Close button
+  - [X] Backdrop click
+  - [X] `Escape` key
+- [X] Background scroll is locked while the modal is open.
+- [X] Basic focus management:
+  - [X] Focus moves into the modal on open
+  - [X] Focus returns to the triggering element on close
+- [X] Product details shown inside the modal are fetched from Shopify’s **Storefront API** (GraphQL).
+- [X] Modal includes a designed **loading skeleton state** while product details are loading.
+- [X] Modal layout:
+  - [X] Desktop: two-column layout (media left, content right)
+  - [X] Mobile: stacked layout (media top, content bottom)
+- [X] Variant selection UI:
+  - [X] Render product options (e.g., Size/Color) as designed controls (pills/segmented preferred)
+  - [X] Maintain `selectedOptions` state (option-name → value)
+  - [X] Resolve the selected variant from `selectedOptions`
+  - [X] Disable unavailable/invalid option values based on current partial selection
+  - [X] Update displayed **price** when the resolved variant changes
+  - [X] Update displayed **image** when the resolved variant changes (variant image preferred; fallback allowed)
+- [X] Primary CTA: **Add to bag (simulation only)**:
+  - [X] CTA disabled until a valid, available variant is selected
+  - [X] On click, simulate async add with a deterministic delay (~800–1200ms)
+  - [X] CTA transitions to a success state (e.g., “Added” + check)
+  - [X] After ~1–2 seconds, reset to idle **or** close the modal (choose one and be consistent)
+- [X] **Motion** requirements:
+  - [X] Backdrop fade in/out
+  - [X] Modal entrance/exit animation
+  - [X] At least one microinteraction animation (examples below are acceptable):
+    - [X] Animated selected option indicator
+    - [X] Button loading → success transition
+    - [X] Image crossfade when variant changes
+    - [X] Subtle press feedback on CTA
+- [X] TypeScript requirements:
+  - [X] No `any` for the core Shopify response shapes used in the modal (product, variants, options, prices)
 
 ---
 

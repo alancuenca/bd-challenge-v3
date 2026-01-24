@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useReducedMotionPreference } from "@/app/hooks/useReducedMotion";
 
 type PillProps = {
   value: string;
@@ -16,6 +17,11 @@ const pillVariants = {
 };
 
 export const Pill = ({ value, isSelected, isDisabled, onClick }: PillProps) => {
+  const prefersReducedMotion = useReducedMotionPreference();
+  const variants = prefersReducedMotion
+    ? { idle: { scale: 1 }, hover: { scale: 1 }, tap: { scale: 1 } }
+    : pillVariants;
+
   return (
     <motion.button
       type="button"
@@ -35,10 +41,10 @@ export const Pill = ({ value, isSelected, isDisabled, onClick }: PillProps) => {
             : "cursor-pointer"
         }
       `}
-      variants={pillVariants}
+      variants={variants}
       initial="idle"
-      whileHover={!isDisabled ? "hover" : "idle"}
-      whileTap={!isDisabled ? "tap" : "idle"}
+      whileHover={!prefersReducedMotion && !isDisabled ? "hover" : "idle"}
+      whileTap={!prefersReducedMotion && !isDisabled ? "tap" : "idle"}
       aria-pressed={isSelected}
       aria-disabled={isDisabled}
     >

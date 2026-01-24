@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import type { ProductImage } from "@/lib/shopify/types";
+import { useReducedMotionPreference } from "@/app/hooks/useReducedMotion";
 
 const imageVariants = {
   initial: { opacity: 0 },
@@ -23,6 +24,14 @@ export const ProductMedia = ({
   hasMultipleImages = false,
 }: ProductMediaProps) => {
   const activeImage = image ?? fallbackImage;
+  const prefersReducedMotion = useReducedMotionPreference();
+  const variants = prefersReducedMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1, transition: { duration: 0.01 } },
+        exit: { opacity: 0, transition: { duration: 0.01 } },
+      }
+    : imageVariants;
 
   return (
     <button
@@ -37,8 +46,12 @@ export const ProductMedia = ({
             key={activeImage.url}
             src={activeImage.url}
             alt={activeImage.altText || "Product image"}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            variants={imageVariants}
+            className={
+              prefersReducedMotion
+                ? "h-full w-full object-cover"
+                : "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            }
+            variants={variants}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -47,7 +60,7 @@ export const ProductMedia = ({
           <motion.div
             key="placeholder"
             className="flex h-full w-full items-center justify-center text-sm text-zinc-500 dark:text-zinc-400"
-            variants={imageVariants}
+            variants={variants}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -63,7 +76,7 @@ export const ProductMedia = ({
           <motion.div
             className="flex h-12 w-12 items-center justify-center rounded-full bg-white/0 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:bg-white/90 group-hover:text-zinc-900 group-hover:opacity-100"
             initial={{ scale: 0.8 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={prefersReducedMotion ? undefined : { scale: 1.1 }}
           >
             <svg
               className="h-6 w-6"

@@ -4,6 +4,7 @@ import { forwardRef, useId, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useProduct } from "@/app/hooks/useProduct";
 import { useVariantSelection } from "@/app/hooks/useVariantSelection";
+import { useReducedMotionPreference } from "@/app/hooks/useReducedMotion";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { ProductMedia } from "./ProductMedia";
 import { ProductInfo, PriceDisplay } from "./ProductInfo";
@@ -38,6 +39,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
     const titleId = useId();
     const { product, isLoading, error } = useProduct(productHandle);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+    const prefersReducedMotion = useReducedMotionPreference();
 
     // Variant selection hook
     const {
@@ -51,20 +53,21 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
       options: product?.options ?? [],
     });
 
-    // Use resolved variant for display, fallback to first variant
-    const activeVariant = resolvedVariant ?? product?.variants.nodes[0] ?? null;
-    const activeImage = activeVariant?.image ?? product?.featuredImage ?? null;
-    const price = activeVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
-    const compareAtPrice = activeVariant?.compareAtPrice ?? null;
-
     // Check if product has real variants (not just "Default Title")
     const hasRealVariants = product?.options?.some(
       (option) => option.name !== "Title" && option.values.length > 0
     ) ?? false;
 
-    // Button is disabled only if variant is unavailable
-    // For products with no real variants, use first variant availability
-    const isAddDisabled = !activeVariant?.availableForSale;
+    // Use resolved variant for display, fallback to first variant only if no real variants
+    const activeVariant = resolvedVariant ?? (!hasRealVariants ? product?.variants.nodes[0] : null) ?? null;
+    const activeImage = activeVariant?.image ?? product?.featuredImage ?? null;
+    const price = activeVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
+    const compareAtPrice = activeVariant?.compareAtPrice ?? null;
+
+    // Button is disabled if:
+    // 1. Product has real variants but no variant is resolved (user must select all options)
+    // 2. The active variant is unavailable for sale
+    const isAddDisabled = (hasRealVariants && !resolvedVariant) || !activeVariant?.availableForSale;
 
     // Get all product images
     const productImages = product?.images.nodes ?? [];
@@ -74,6 +77,22 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
     const initialGalleryIndex = activeImage
       ? productImages.findIndex((img) => img.url === activeImage.url)
       : 0;
+
+    const modalVariants = prefersReducedMotion
+      ? {
+          hidden: { opacity: 0 },
+          visible: { opacity: 1, transition: { duration: 0.01 } },
+          exit: { opacity: 0, transition: { duration: 0.01 } },
+        }
+      : modalAnimationVariants;
+
+    const closeVariants = prefersReducedMotion
+      ? {
+          initial: { scale: 1, rotate: 0 },
+          hover: { scale: 1, rotate: 0 },
+          tap: { scale: 1, rotate: 0 },
+        }
+      : closeButtonVariants;
 
     return (
       <>
@@ -90,7 +109,7 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
             aria-labelledby={product ? titleId : undefined}
             tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
-            variants={modalAnimationVariants}
+            variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -100,10 +119,10 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
               onClick={onClose}
               type="button"
               aria-label="Close quick view"
-              variants={closeButtonVariants}
+            variants={closeVariants}
               initial="initial"
-              whileHover="hover"
-              whileTap="tap"
+            whileHover={prefersReducedMotion ? "initial" : "hover"}
+            whileTap={prefersReducedMotion ? "initial" : "tap"}
             >
               ×
             </motion.button>

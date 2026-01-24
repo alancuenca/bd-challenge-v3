@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useReducedMotionPreference } from "@/app/hooks/useReducedMotion";
 
 type AddToBagStatus = "idle" | "loading" | "success";
 
@@ -28,6 +29,22 @@ const iconVariants = {
 
 export const AddToBagButton = ({ disabled, onAdd }: AddToBagButtonProps) => {
   const [status, setStatus] = useState<AddToBagStatus>("idle");
+  const prefersReducedMotion = useReducedMotionPreference();
+  const variants = prefersReducedMotion
+    ? {
+        idle: { scale: 1 },
+        hover: { scale: 1 },
+        tap: { scale: 1 },
+        success: { scale: 1 },
+      }
+    : buttonVariants;
+  const iconVariantsToUse = prefersReducedMotion
+    ? {
+        initial: { opacity: 0, scale: 1 },
+        animate: { opacity: 1, scale: 1, transition: { duration: 0.01 } },
+        exit: { opacity: 0, scale: 1, transition: { duration: 0.01 } },
+      }
+    : iconVariants;
 
   const handleClick = useCallback(async () => {
     if (disabled || status !== "idle") {
@@ -64,19 +81,25 @@ export const AddToBagButton = ({ disabled, onAdd }: AddToBagButtonProps) => {
         ${
           status === "success"
             ? "bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600"
+            : status === "loading"
+            ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
             : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
         }
         ${
-          disabled || status !== "idle"
+          disabled && status === "idle"
             ? "opacity-50 cursor-not-allowed"
             : "cursor-pointer"
         }
       `}
-      variants={buttonVariants}
+      variants={variants}
       initial="idle"
       animate={status === "success" ? "success" : "idle"}
-      whileHover={!disabled && status === "idle" ? "hover" : "idle"}
-      whileTap={!disabled && status === "idle" ? "tap" : "idle"}
+      whileHover={
+        !prefersReducedMotion && !disabled && status === "idle" ? "hover" : "idle"
+      }
+      whileTap={
+        !prefersReducedMotion && !disabled && status === "idle" ? "tap" : "idle"
+      }
       aria-busy={status === "loading"}
       aria-live="polite"
     >
@@ -88,7 +111,7 @@ export const AddToBagButton = ({ disabled, onAdd }: AddToBagButtonProps) => {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            variants={iconVariants}
+            variants={iconVariantsToUse}
             initial="initial"
             animate="animate"
             exit="exit"
@@ -117,7 +140,7 @@ export const AddToBagButton = ({ disabled, onAdd }: AddToBagButtonProps) => {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={3}
-            variants={iconVariants}
+            variants={iconVariantsToUse}
             initial="initial"
             animate="animate"
             exit="exit"

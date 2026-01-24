@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { ProductImage } from "@/lib/shopify/types";
+import { useReducedMotionPreference } from "@/app/hooks/useReducedMotion";
 
 type ImageGalleryProps = {
   images: ProductImage[];
@@ -46,6 +47,28 @@ export const ImageGallery = ({
 }: ImageGalleryProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
+  const prefersReducedMotion = useReducedMotionPreference();
+  const galleryVariantsToUse = prefersReducedMotion
+    ? {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 0.01 } },
+        exit: { opacity: 0, transition: { duration: 0.01 } },
+      }
+    : galleryVariants;
+  const imageVariantsToUse = prefersReducedMotion
+    ? {
+        enter: { opacity: 0 },
+        center: { opacity: 1, transition: { duration: 0.01 } },
+        exit: { opacity: 0, transition: { duration: 0.01 } },
+      }
+    : imageVariants;
+  const buttonVariantsToUse = prefersReducedMotion
+    ? {
+        initial: { scale: 1 },
+        hover: { scale: 1 },
+        tap: { scale: 1 },
+      }
+    : buttonVariants;
 
   const handlePrevious = () => {
     setDirection(-1);
@@ -67,7 +90,7 @@ export const ImageGallery = ({
   return (
     <motion.div
       className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-zinc-900"
-      variants={galleryVariants}
+      variants={galleryVariantsToUse}
       initial="hidden"
       animate="visible"
       exit="exit"
@@ -77,10 +100,10 @@ export const ImageGallery = ({
         <motion.button
           onClick={onClose}
           className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800"
-          variants={buttonVariants}
+          variants={buttonVariantsToUse}
           initial="initial"
-          whileHover="hover"
-          whileTap="tap"
+          whileHover={prefersReducedMotion ? "initial" : "hover"}
+          whileTap={prefersReducedMotion ? "initial" : "tap"}
         >
           <svg
             className="h-5 w-5"
@@ -111,7 +134,7 @@ export const ImageGallery = ({
             alt={currentImage.altText || `Image ${currentIndex + 1}`}
             className="max-h-full max-w-full object-contain"
             custom={direction}
-            variants={imageVariants}
+            variants={imageVariantsToUse}
             initial="enter"
             animate="center"
             exit="exit"
@@ -124,10 +147,10 @@ export const ImageGallery = ({
             <motion.button
               onClick={handlePrevious}
               className="absolute left-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-zinc-900 shadow-lg backdrop-blur-sm transition-colors hover:bg-white dark:bg-zinc-800/90 dark:text-zinc-100 dark:hover:bg-zinc-800"
-              variants={buttonVariants}
+              variants={buttonVariantsToUse}
               initial="initial"
-              whileHover="hover"
-              whileTap="tap"
+              whileHover={prefersReducedMotion ? "initial" : "hover"}
+              whileTap={prefersReducedMotion ? "initial" : "tap"}
               aria-label="Previous image"
             >
               <svg
@@ -147,10 +170,10 @@ export const ImageGallery = ({
             <motion.button
               onClick={handleNext}
               className="absolute right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-zinc-900 shadow-lg backdrop-blur-sm transition-colors hover:bg-white dark:bg-zinc-800/90 dark:text-zinc-100 dark:hover:bg-zinc-800"
-              variants={buttonVariants}
+              variants={buttonVariantsToUse}
               initial="initial"
-              whileHover="hover"
-              whileTap="tap"
+              whileHover={prefersReducedMotion ? "initial" : "hover"}
+              whileTap={prefersReducedMotion ? "initial" : "tap"}
               aria-label="Next image"
             >
               <svg
@@ -184,10 +207,10 @@ export const ImageGallery = ({
                     ? "ring-2 ring-zinc-900 ring-offset-2 dark:ring-zinc-100 dark:ring-offset-zinc-900"
                     : "opacity-60 hover:opacity-100"
                 }`}
-                variants={buttonVariants}
+                variants={buttonVariantsToUse}
                 initial="initial"
-                whileHover="hover"
-                whileTap="tap"
+                whileHover={prefersReducedMotion ? "initial" : "hover"}
+                whileTap={prefersReducedMotion ? "initial" : "tap"}
               >
                 <img
                   src={image.url}
