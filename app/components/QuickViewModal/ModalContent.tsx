@@ -40,7 +40,11 @@ export const ModalContent = forwardRef<HTMLDivElement, ModalContentProps>(
     const compareAtPrice = initialVariant?.compareAtPrice ?? null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation">
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center p-4" 
+        role="presentation"
+        onClick={onClose}
+      >
         <motion.div
           ref={ref}
           className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl dark:bg-zinc-900"
