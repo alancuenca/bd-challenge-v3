@@ -21,9 +21,10 @@ const formatPrice = (amount: string, currencyCode: string) => {
 
 type ProductCardProps = {
   product: ProductCardType;
+  priority?: boolean;
 };
 
-export const ProductCard = ({ product }: ProductCardProps) => {
+export const ProductCard = ({ product, priority = false }: ProductCardProps) => {
   const { open } = useQuickView();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const price = product.priceRange.minVariantPrice;
@@ -46,7 +47,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             height={image.height ?? 1000}
             alt={image.altText || product.title}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            priority={priority}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-sm text-zinc-500">
