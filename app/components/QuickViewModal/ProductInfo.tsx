@@ -69,7 +69,7 @@ export const ProductInfo = ({
             >
               {description}
             </div>
-            
+
             {/* Gradient overlay when collapsed */}
             {!isExpanded && showSeeMore && (
               <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-white to-transparent dark:from-zinc-900" />
@@ -110,7 +110,7 @@ export const PriceDisplay = ({ price, compareAtPrice }: PriceDisplayProps) => {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className="flex items-baseline gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-700"
+      className="flex items-baseline gap-3 border-t border-zinc-200 pt-3 pb-4 lg:pb-0 dark:border-zinc-700"
     >
       <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
         {formatPrice(price.amount, price.currencyCode)}
