@@ -7,7 +7,13 @@
 - Add swipe to navigate through the gallery
 - Reduce layout shift when loading from skeleton to product
 - think more deeply about the UX/UI of the preview cards
-
+- 
+<img width="1156" height="877" alt="Screenshot 2026-01-24 at 12 40 05 AM" src="https://github.com/user-attachments/assets/ab515674-38d4-49d9-b6ae-6d40957d88ff" />
+-
+<img width="1073" height="839" alt="Screenshot 2026-01-24 at 12 38 23 AM" src="https://github.com/user-attachments/assets/3c034b3a-6c89-4593-a81c-982e94e59a41" />
+-
+<img width="1156" height="877" alt="Screenshot 2026-01-24 at 12 38 36 AM" src="https://github.com/user-attachments/assets/5c453e8b-cdeb-459b-9edd-7c8ee58e1940" />
+-
 
 ### Shopify Quick View Modal (Headless UI Feature)
 
