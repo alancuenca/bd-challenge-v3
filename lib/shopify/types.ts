@@ -1,3 +1,13 @@
+/**
+ * Shopify Storefront API Types
+ * 
+ * These types match the GraphQL schema and are used alongside the codegen-generated
+ * types in ./graphql/.generated/ for full type safety.
+ * 
+ * Run `pnpm codegen` to regenerate types from the Shopify schema.
+ */
+
+// Base types from Shopify Storefront API
 export type MoneyV2 = {
   amount: string;
   currencyCode: string;
@@ -31,6 +41,7 @@ export type ProductVariant = {
   image: ProductImage | null;
 };
 
+// Product detail for modal view
 export type ProductDetail = {
   id: string;
   handle: string;
@@ -50,6 +61,7 @@ export type ProductDetail = {
   };
 };
 
+// Product card for listing view
 export type ProductCard = {
   id: string;
   handle: string;
@@ -63,20 +75,7 @@ export type ProductCard = {
   } | null;
 };
 
-export type CollectionProductsData = {
-  collection: {
-    title: string;
-    products: {
-      nodes: ProductCard[];
-    };
-  } | null;
-};
-
-export type CollectionProductsVariables = {
-  handle: string;
-  first?: number;
-};
-
+// Query response types
 export type ProductsData = {
   products: {
     nodes: ProductCard[];

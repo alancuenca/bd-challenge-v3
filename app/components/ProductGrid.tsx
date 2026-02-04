@@ -6,25 +6,22 @@ type ProductGridProps = {
   products: ProductCardType[];
 };
 
-export const ProductGrid = ({ title, products }: ProductGridProps) => {
+export function ProductGrid({ title, products }: ProductGridProps) {
   return (
     <section className="grid-container py-10 lg:py-16">
-      <div className="flex flex-col gap-3 pb-8">
-        <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">
-          Featured Collection
-        </p>
-        <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 lg:text-3xl">
+      <div className="flex flex-col gap-2 pb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white lg:text-4xl">
           {title}
-        </h2>
-        <p className="text-base text-zinc-600">
-          Curated pieces with thoughtful details and premium materials.
+        </h1>
+        <p className="text-base text-zinc-500 dark:text-zinc-400">
+          {products.length} products
         </p>
       </div>
       <div className="grid-12">
         {products.map((product, index) => (
-          <ProductCard key={product.id} product={product} priority={index === 0} />
+          <ProductCard key={product.id} product={product} priority={index < 4} />
         ))}
       </div>
     </section>
   );
-};
+}
