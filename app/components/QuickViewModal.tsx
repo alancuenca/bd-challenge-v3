@@ -36,7 +36,7 @@ function resolveVariant(
   return (
     variants.find((variant) =>
       variant.selectedOptions.every(
-        (opt) => selectedOptions[opt.name] === opt.value
+        (opt) => selectedOptions[ opt.name ] === opt.value
       )
     ) ?? null
   );
@@ -53,8 +53,8 @@ function getAvailableValues(
     const matches = variant.selectedOptions.every(
       (opt) =>
         opt.name === optionName ||
-        !currentSelection[opt.name] ||
-        currentSelection[opt.name] === opt.value
+        !currentSelection[ opt.name ] ||
+        currentSelection[ opt.name ] === opt.value
     );
     if (matches) {
       const opt = variant.selectedOptions.find((o) => o.name === optionName);
@@ -68,7 +68,7 @@ function getInitialOptions(variants: ProductVariant[]): Record<string, string> {
   const firstAvailable = variants.find((v) => v.availableForSale);
   if (!firstAvailable) return {};
   return firstAvailable.selectedOptions.reduce(
-    (acc, opt) => ({ ...acc, [opt.name]: opt.value }),
+    (acc, opt) => ({ ...acc, [ opt.name ]: opt.value }),
     {}
   );
 }
@@ -83,7 +83,7 @@ function LoadingSkeleton() {
       <div className="md:w-1/2 bg-zinc-100 dark:bg-zinc-800">
         <div className="aspect-square w-full animate-pulse bg-zinc-200 dark:bg-zinc-700" />
         <div className="flex gap-2 p-4">
-          {[1, 2, 3].map((i) => (
+          {[ 1, 2, 3 ].map((i) => (
             <div
               key={i}
               className="h-16 w-16 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-700"
@@ -98,7 +98,7 @@ function LoadingSkeleton() {
           <div className="h-4 w-2/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
           <div className="h-8 w-1/3 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
           <div className="flex gap-2 pt-4">
-            {[1, 2, 3].map((i) => (
+            {[ 1, 2, 3 ].map((i) => (
               <div
                 key={i}
                 className="h-10 w-20 animate-pulse rounded-full bg-zinc-200 dark:bg-zinc-700"
@@ -132,10 +132,9 @@ function OptionPill({
       disabled={isDisabled}
       className={`
         px-4 py-2 rounded-full text-sm font-medium border transition-colors
-        ${
-          isSelected
-            ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900"
-            : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
+        ${isSelected
+          ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-900"
+          : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
         }
         ${isDisabled ? "opacity-40 cursor-not-allowed line-through" : "cursor-pointer"}
       `}
@@ -167,10 +166,9 @@ function AddToBagButton({
       className={`
         w-full py-3.5 rounded-full font-bold text-sm md:text-base flex items-center justify-center gap-2
         transition-all shadow-sm active:scale-[0.98]
-        ${
-          state === "success"
-            ? "bg-green-600 text-white"
-            : disabled
+        ${state === "success"
+          ? "bg-green-600 text-white"
+          : disabled
             ? "bg-zinc-100 text-zinc-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600"
             : "bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-md dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
         }
@@ -207,11 +205,11 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
   const productHandle = searchParams.get("product");
   const reducedMotion = useReducedMotion() ?? false;
 
-  const [product, setProduct] = useState<ProductDetail | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const [addToBagState, setAddToBagState] = useState<AddToBagState>("idle");
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [ product, setProduct ] = useState<ProductDetail | null>(null);
+  const [ loading, setLoading ] = useState(false);
+  const [ selectedOptions, setSelectedOptions ] = useState<Record<string, string>>({});
+  const [ addToBagState, setAddToBagState ] = useState<AddToBagState>("idle");
+  const [ selectedImageIndex, setSelectedImageIndex ] = useState(0);
 
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -255,7 +253,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
       });
 
     return () => controller.abort();
-  }, [productHandle]);
+  }, [ productHandle ]);
 
   // Scroll lock
   useEffect(() => {
@@ -269,7 +267,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [ isOpen ]);
 
   // Escape key
   useEffect(() => {
@@ -279,30 +277,30 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen]);
+  }, [ isOpen ]);
 
   const closeModal = useCallback(() => {
     router.push("/", { scroll: false });
-  }, [router]);
+  }, [ router ]);
 
   const openModal = useCallback(
     (handle: string, trigger?: HTMLElement) => {
       triggerRef.current = trigger ?? null;
       router.push(`/?product=${handle}`, { scroll: false });
     },
-    [router]
+    [ router ]
   );
 
   // Derived state
-  const variants = useMemo(() => product?.variants.nodes ?? [], [product]);
+  const variants = useMemo(() => product?.variants.nodes ?? [], [ product ]);
   const resolvedVariant = useMemo(
     () => resolveVariant(variants, selectedOptions),
-    [variants, selectedOptions]
+    [ variants, selectedOptions ]
   );
 
-  const images = useMemo(() => product?.images.nodes ?? [], [product]);
+  const images = useMemo(() => product?.images.nodes ?? [], [ product ]);
   const currentImage =
-    images[selectedImageIndex] ?? resolvedVariant?.image ?? product?.featuredImage;
+    images[ selectedImageIndex ] ?? resolvedVariant?.image ?? product?.featuredImage;
 
   const price: MoneyV2 | null =
     resolvedVariant?.price ?? product?.priceRange.minVariantPrice ?? null;
@@ -320,7 +318,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
       const idx = images.findIndex((img) => img.url === resolvedVariant.image?.url);
       if (idx !== -1) setSelectedImageIndex(idx);
     }
-  }, [resolvedVariant?.image, images]);
+  }, [ resolvedVariant?.image, images ]);
 
   const handleAddToBag = useCallback(async () => {
     if (isAddDisabled || addToBagState !== "idle") return;
@@ -331,7 +329,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
       setAddToBagState("idle");
       closeModal();
     }, 1500);
-  }, [isAddDisabled, addToBagState, closeModal]);
+  }, [ isAddDisabled, addToBagState, closeModal ]);
 
   // Animation variants
   const backdropVariants = {
@@ -343,10 +341,10 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
   const modalVariants = reducedMotion
     ? { hidden: { opacity: 0 }, visible: { opacity: 1 }, exit: { opacity: 0 } }
     : {
-        hidden: { opacity: 0, scale: 0.96, y: 10 },
-        visible: { opacity: 1, scale: 1, y: 0 },
-        exit: { opacity: 0, scale: 0.96, y: 10 },
-      };
+      hidden: { opacity: 0, scale: 0.96, y: 10 },
+      visible: { opacity: 1, scale: 1, y: 0 },
+      exit: { opacity: 0, scale: 0.96, y: 10 },
+    };
 
   return (
     <AnimatePresence>
@@ -373,7 +371,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
               initial="hidden"
               animate="visible"
               exit="exit"
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.25, ease: [ 0.16, 1, 0.3, 1 ] }}
               role="dialog"
               aria-modal="true"
               aria-labelledby={product ? "modal-title" : undefined}
@@ -433,11 +431,10 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                             <motion.button
                               key={img.url}
                               onClick={() => setSelectedImageIndex(idx)}
-                              className={`relative shrink-0 h-16 w-16 rounded-lg overflow-hidden border-2 transition-colors ${
-                                idx === selectedImageIndex
+                              className={`relative shrink-0 h-16 w-16 rounded-lg overflow-hidden border-2 transition-colors ${idx === selectedImageIndex
                                   ? "border-zinc-900 dark:border-white"
                                   : "border-transparent hover:border-zinc-300 dark:hover:border-zinc-600"
-                              }`}
+                                }`}
                               whileHover={!reducedMotion ? { scale: 1.05 } : undefined}
                               whileTap={!reducedMotion ? { scale: 0.95 } : undefined}
                             >
@@ -457,7 +454,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                     {/* Details Section */}
                     <div className="flex-1 flex flex-col">
                       {/* Scrollable Content */}
-                      <div className="flex-1 overflow-y-auto px-4 py-5 md:p-8 pb-20 md:pb-8">
+                      <div className="flex-1 overflow-y-auto px-4 py-5 md:p-8 p-20 md:pb-8">
                         {/* Title */}
                         <h2
                           id="modal-title"
@@ -466,20 +463,29 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                           {product.title}
                         </h2>
 
-                        {/* Price - Moved up for better visibility */}
-                        {price && (
-                          <div className="mt-2 flex items-baseline gap-2">
-                            <span className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white">
-                              {formatPrice(price.amount, price.currencyCode)}
-                            </span>
-                            {compareAtPrice &&
-                              Number(compareAtPrice.amount) > Number(price.amount) && (
-                                <span className="text-sm md:text-base text-zinc-500 line-through">
+                          {/* Price Container */}
+                          {price && (
+                            <motion.div
+                              key={`${price.amount}-${resolvedVariant?.id}`}
+                              className="mt-2 flex items-baseline gap-2"
+                              initial={{ opacity: 0, y: 5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                              {/* Current Price */}
+                              <span className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white">
+                                {formatPrice(price.amount, price.currencyCode)}
+                              </span>
+
+                              {/* Compare At Price - Only show if significantly higher */}
+                              {compareAtPrice && Number(compareAtPrice.amount) > Number(price.amount) && (
+                                <span className="text-sm md:text-base text-zinc-500 line-through" aria-label="Original price">
                                   {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
                                 </span>
                               )}
-                          </div>
-                        )}
+                            </motion.div>
+                          )}
+
 
                         {/* Description */}
                         {product.description && (
@@ -505,9 +511,9 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                                       <span className="text-xs md:text-sm font-semibold uppercase tracking-wide text-zinc-900 dark:text-white">
                                         {option.name}
                                       </span>
-                                      {selectedOptions[option.name] && (
+                                      {selectedOptions[ option.name ] && (
                                         <span className="text-xs md:text-sm text-zinc-500">
-                                          {selectedOptions[option.name]}
+                                          {selectedOptions[ option.name ]}
                                         </span>
                                       )}
                                     </div>
@@ -516,12 +522,12 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                                         <OptionPill
                                           key={value}
                                           value={value}
-                                          isSelected={selectedOptions[option.name] === value}
+                                          isSelected={selectedOptions[ option.name ] === value}
                                           isDisabled={!available.has(value)}
                                           onClick={() =>
                                             setSelectedOptions((prev) => ({
                                               ...prev,
-                                              [option.name]: value,
+                                              [ option.name ]: value,
                                             }))
                                           }
                                           reducedMotion={reducedMotion}
@@ -568,12 +574,12 @@ export function useQuickViewModal() {
     (handle: string) => {
       router.push(`/?product=${handle}`, { scroll: false });
     },
-    [router]
+    [ router ]
   );
 
   const close = useCallback(() => {
     router.push("/", { scroll: false });
-  }, [router]);
+  }, [ router ]);
 
   const isOpen = !!searchParams.get("product");
 
