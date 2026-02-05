@@ -165,14 +165,14 @@ function AddToBagButton({
       onClick={onAdd}
       disabled={disabled || state !== "idle"}
       className={`
-        w-full py-4 rounded-full font-semibold text-base flex items-center justify-center gap-2
-        transition-colors
+        w-full py-3.5 rounded-full font-bold text-sm md:text-base flex items-center justify-center gap-2
+        transition-all shadow-sm active:scale-[0.98]
         ${
           state === "success"
             ? "bg-green-600 text-white"
             : disabled
-            ? "bg-zinc-200 text-zinc-400 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500"
-            : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+            ? "bg-zinc-100 text-zinc-400 cursor-not-allowed dark:bg-zinc-800 dark:text-zinc-600"
+            : "bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-md dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
         }
       `}
       whileHover={!reducedMotion && !disabled && state === "idle" ? { scale: 1.01 } : undefined}
@@ -417,7 +417,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                                 src={currentImage.url}
                                 alt={currentImage.altText || product.title}
                                 fill
-                                className="object-contain p-4"
+                                className="object-contain pt-4"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                                 priority
                               />
@@ -428,7 +428,7 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
 
                       {/* Thumbnails */}
                       {images.length > 1 && (
-                        <div className="flex gap-2 p-4 overflow-x-auto">
+                        <div className="flex gap-2 p-4 1.5 overflow-x-auto">
                           {images.map((img, idx) => (
                             <motion.button
                               key={img.url}
@@ -455,94 +455,89 @@ export function QuickViewModal({ products }: QuickViewModalProps) {
                     </div>
 
                     {/* Details Section */}
-                    <div className="flex-1 flex flex-col p-6 md:p-8">
-                      {/* Title */}
-                      <h2
-                        id="modal-title"
-                        className="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white tracking-tight"
-                      >
-                        {product.title}
-                      </h2>
-
-                      {/* Description */}
-                      {product.description && (
-                        <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3">
-                          {product.description}
-                        </p>
-                      )}
-
-                      {/* Price */}
-                      {price && (
-                        <motion.div
-                          key={price.amount}
-                          className="mt-4 flex items-baseline gap-2"
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.15 }}
+                    <div className="flex-1 flex flex-col">
+                      {/* Scrollable Content */}
+                      <div className="flex-1 overflow-y-auto px-4 py-5 md:p-8 pb-20 md:pb-8">
+                        {/* Title */}
+                        <h2
+                          id="modal-title"
+                          className="text-xl md:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight leading-tight"
                         >
-                          <span className="text-2xl font-bold text-zinc-900 dark:text-white">
-                            {formatPrice(price.amount, price.currencyCode)}
-                          </span>
-                          {compareAtPrice &&
-                            Number(compareAtPrice.amount) > Number(price.amount) && (
-                              <span className="text-base text-zinc-400 line-through">
-                                {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
-                              </span>
-                            )}
-                        </motion.div>
-                      )}
+                          {product.title}
+                        </h2>
 
-                      {/* Variant Options */}
-                      {hasRealVariants && (
-                        <div className="mt-6 space-y-4">
-                          {product.options
-                            .filter((opt) => opt.name !== "Title")
-                            .map((option) => {
-                              const available = getAvailableValues(
-                                variants,
-                                option.name,
-                                selectedOptions
-                              );
-                              return (
-                                <div key={option.id}>
-                                  <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-medium text-zinc-900 dark:text-white">
-                                      {option.name}
-                                    </span>
-                                    {selectedOptions[option.name] && (
-                                      <span className="text-sm text-zinc-500">
-                                        {selectedOptions[option.name]}
+                        {/* Price - Moved up for better visibility */}
+                        {price && (
+                          <div className="mt-2 flex items-baseline gap-2">
+                            <span className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white">
+                              {formatPrice(price.amount, price.currencyCode)}
+                            </span>
+                            {compareAtPrice &&
+                              Number(compareAtPrice.amount) > Number(price.amount) && (
+                                <span className="text-sm md:text-base text-zinc-500 line-through">
+                                  {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+                                </span>
+                              )}
+                          </div>
+                        )}
+
+                        {/* Description */}
+                        {product.description && (
+                          <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-3 md:line-clamp-none">
+                            {product.description}
+                          </p>
+                        )}
+
+                        {/* Variant Options */}
+                        {hasRealVariants && (
+                          <div className="mt-5 md:mt-6 space-y-3 md:space-y-4">
+                            {product.options
+                              .filter((opt) => opt.name !== "Title")
+                              .map((option) => {
+                                const available = getAvailableValues(
+                                  variants,
+                                  option.name,
+                                  selectedOptions
+                                );
+                                return (
+                                  <div key={option.id}>
+                                    <div className="flex items-center justify-between mb-1.5 md:mb-2">
+                                      <span className="text-xs md:text-sm font-semibold uppercase tracking-wide text-zinc-900 dark:text-white">
+                                        {option.name}
                                       </span>
-                                    )}
+                                      {selectedOptions[option.name] && (
+                                        <span className="text-xs md:text-sm text-zinc-500">
+                                          {selectedOptions[option.name]}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                      {option.values.map((value) => (
+                                        <OptionPill
+                                          key={value}
+                                          value={value}
+                                          isSelected={selectedOptions[option.name] === value}
+                                          isDisabled={!available.has(value)}
+                                          onClick={() =>
+                                            setSelectedOptions((prev) => ({
+                                              ...prev,
+                                              [option.name]: value,
+                                            }))
+                                          }
+                                          reducedMotion={reducedMotion}
+                                        />
+                                      ))}
+                                    </div>
                                   </div>
-                                  <div className="flex flex-wrap gap-2">
-                                    {option.values.map((value) => (
-                                      <OptionPill
-                                        key={value}
-                                        value={value}
-                                        isSelected={selectedOptions[option.name] === value}
-                                        isDisabled={!available.has(value)}
-                                        onClick={() =>
-                                          setSelectedOptions((prev) => ({
-                                            ...prev,
-                                            [option.name]: value,
-                                          }))
-                                        }
-                                        reducedMotion={reducedMotion}
-                                      />
-                                    ))}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
-                      )}
+                                );
+                              })}
+                          </div>
+                        )}
+                      </div>
 
-                      {/* Spacer */}
-                      <div className="flex-1 min-h-4" />
-
-                      {/* Add to Bag */}
-                      <div className="mt-6">
+                      {/* Add to Bag - Sticky on Mobile */}
+                      {/* Slimmer profile, backdrop blur, subtle border */}
+                      <div className="sticky bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-t border-zinc-200/50 dark:border-zinc-800/50 md:static md:bg-transparent md:dark:bg-transparent md:border-t-0 md:px-8 md:pb-8">
                         <AddToBagButton
                           disabled={isAddDisabled}
                           state={addToBagState}
